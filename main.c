@@ -23,6 +23,7 @@ void generar(char espacio[t][t]);
 void spawn(char espacio[t][t], struct cuerpo *snake);
 char direccion(char espacio[t][t], struct cuerpo *snake, char letra, int *muerto, char ult, int tam);
 void guardar_puntaje(char nombre[20], int puntaje);
+void ver_puntajes();
 
 int main(int argc, char *argv[]) {
 	srand(time(NULL));
@@ -49,7 +50,8 @@ int main(int argc, char *argv[]) {
         // imprime el menu
 		printf("\n\n                         ....              ...::...                                                 \n                     ..::.......       ..:,::,,,,,::.                                               \n                ....::c;,::::,,;,::::,;;,,,:odxdlc:;::....                                          \n            ..::::::,:..::.....::..:;;,.,d00k0XKOkdd:.,;:.:::..                                     \n            :::;,,,,,;;;;:c;:......:;..:ONO;.c0XXK0Ol..,...::,:....                                 \n           .,cl:,;:.......::::,.......,dKXl..:OXXXX0l:..........:,,:.....                           \n           .,cc:;,.......,;;;,,.......,o0d...dKX0kl::..............:,,:::...                       \n              .::::,......,;,;..::.......:o:::xko;....::.::::........::..,;,:..                     \n                .,lc;;;,:.,;;;....... ............::::,;;;,:..:........:....,;:..                   \n                 .lc...:cll;;c;,,:............:;;:c::;::....::...............:,;:.                  \n                 .:l.   ;xl:,;.:,,,,,;;;;;;;:ll:,,,,:....,,:::..................;,.                 \n                  :l.   ,xc:;:.....;ccccllc::;........,;;::cll:::,..............:::.                \n                  .:,   ,o,:;...::lodool:;:.....,,,,,:oddxkkkddxkxol,............;;.                \n                  .:;   :;.;;.::odollc;......:,,,:....:ldxxxkkkkOOkOx;...........,;.                \n                 ..,.. .:.::;:oolll:,...:;,:::..  .    .,xOkkkkkkxxkkd;....:.....:,.                \n                 ...   ::.:llocllc,..,,,,...   .         :lxkkkxxxxxddd;.........;;.                \n                      .:.cdolccc;,,:::.                   .lOOOOOkdooodc:.......::,.                \n   ...              .:,,;clllc:,::..                       :dkxddddoodxo,.......;:.                 \n   ..:.         ...:;;,:. .....                            .:xxxxxxdoooc........:.                  \n    ..:.......:,;:;,:..                                    .:kxdddddddo,.......;;.                  \n      ..:,,;;,,::...                                       .lxdddooloo:.......;;.                   \n                                                          .;kxdoooooo:.......;,.                    \n                                                         .;okkxddool,......,;,..                    \n                                                       .,lxxxdoolc;.......,;..;. .                  \n                                                   ..::ldxxdoooc;........,,. .;;:..     .           \n                                              ..,;:coddoodocc;.........:,:. . :lc,:....  .          \n                                        ..:,;:lllllllllc;;;:.........:,:.     ..cc:,::.....         \n                                   ..:,;cloooolc::::;:............,,,:.         ..;ll;...:::..      \n                              ..:;;;:loollcc:;,:................;:,..              .cd;....:;,.     \n                  .........:;::cllc::cccc:,..........:.......:cc:,..::::::.:::::::::,,......;l,.    \n               ....:......:;,::,,,,;:;;,:............:::..::,;,:::::...........:...........::oc.    \n             ..,:............  .........  ...............  .............................,,;c:c;.    \n            .:,.................... .........   .. ................................:;;,:d.:;oc.     \n           .,cc;,;::,:,:..:::.........................................::........;:;;lo:,col:;.      \n           .cdo:lxxc:dxl,;llc;:::;:,c:;:.,::;;,,;::;,.:,,,::;,:,,,,:,:cc;:;cc:,,coc,cdl:cc,..       \n           .cdc:dxocokkl;ldo:cxdoc;oxoc,:doll:,cdool;::lcc;,cc;:llc;:lll:,:olc;::ol:loc,..          \n            .ccldxdcokxl:ddlcokdl::ddoc;lxdoo;;ddool,,lolc;:lc;cooc,;lllc,;oooc;ldl:,..             \n             ..:;:c:lxxolxkxodkxdcckkxocoxxxd:cxxdxo:cdddc:lol:looc:ldddo:cllc;::..                 \n                       :::,;:;:ccc:;ccc:;:lllc::llcc:;;cc:;,;:;,,,,::,,,::                          \n");
 		if(cambio==0){
-			printf("\n\n				PRESIONE CUALQUIER TECLA PARA COMENZAR");
+			printf("\n\n				PRESIONE A PARA COMENZAR");
+			printf("\n				PRESIONE P PARA VER PUNTAJES");
 		}
         // invierte el valor de cambio
 		cambio=~cambio;
@@ -58,102 +60,110 @@ int main(int argc, char *argv[]) {
 		system("cls");
 	}	
 	system("cls");
+	letra=getch();
     
-    // mientras el jugador no haya perdido puede jugar
-	while(muerto==0){
-		if(kbhit()){
-            // lo almaceno
-			letra=getch();
-            // asigno el movimiento que voy a hacer dependiendo de la direccion que ya tenia
-			if(letra=='w' && ult=='s'){
-				letra='s';
-			}
-			if(letra=='a' && ult=='d'){
-				letra='d';
-			}
-			if(letra=='s' && ult=='w'){
-				letra='w';
-			}
-			if(letra=='d' && ult=='a'){
-				letra='a';
-			}
-		}
-		
-		for(int i=0;i<(tam-1);i++){
-			auxx=snake[i+1].x;
-			auxy=snake[i+1].y;
-            
-			if(i!=0){
-				snake[i+1].x=auxx2;
-				snake[i+1].y=auxy2;
-			}
-			if(i==0){
-				snake[i+1].x=snake[i].x;
-				snake[i+1].y=snake[i].y;
-				
-				ult=direccion(espacio,&snake[0],letra,&muerto,ult,tam);
-
-                // si la posicion de la cabeza es la misma que la de la manzana
-				if (manzana.x == snake[0].x && manzana.y == snake[0].y)
-				{
-					tam++;
-                    puntaje=puntaje+100;
-                    // muevo la vivorita si toca una tecla adecuada
-                    switch (letra){
-                    case 'w':
-                        snake[tam-1].x=snake[tam-2].x+1;
-						snake[tam-1].y=snake[tam-2].y;
-                        break;
-                    case 'a':
-                        snake[tam-1].x=snake[tam-2].x;
-						snake[tam-1].y=snake[tam-2].y+1;
-                        break;
-                    case 's':
-                        snake[tam-1].x=snake[tam-2].x-1;
-						snake[tam-1].y=snake[tam-2].y;
-                        break;
-                    case 'd':
-                        snake[tam-1].x=snake[tam-2].x;
-						snake[tam-1].y=snake[tam-2].y-1;
-                        break;
-                    default:
-                        break;
-                    }
-
-                    // agrega una manzana en una posicion libre dentro de los margenes
-					while(dif==0){
-						dif=1;
-						manzana.x = 1 + rand() % (t - 2);
-						manzana.y = 1 + rand() % (t - 2);
-						for(int j=0;j<(tam-1);j++){
-							if(manzana.x == snake[j].x && manzana.y == snake[j].y){
-								dif=0;
-								break;
-							}
-						}
-					}
-					dif=0;
-					
-                    // asigna la manzana en la posicion adecuada
-					espacio[manzana.x][manzana.y] = '#';
+	if(letra == 'a'){
+		// mientras el jugador no haya perdido puede jugar
+		while(muerto==0){
+			if(kbhit()){
+				// lo almaceno
+				letra=getch();
+				// asigno el movimiento que voy a hacer dependiendo de la direccion que ya tenia
+				if(letra=='w' && ult=='s'){
+					letra='s';
+				}
+				if(letra=='a' && ult=='d'){
+					letra='d';
+				}
+				if(letra=='s' && ult=='w'){
+					letra='w';
+				}
+				if(letra=='d' && ult=='a'){
+					letra='a';
 				}
 			}
-			espacio[snake[i+1].x][snake[i+1].y]='x';
-			espacio[auxx][auxy]=' ';
-			auxx2=auxx;
-			auxy2=auxy;
+			
+			for(int i=0;i<(tam-1);i++){
+				auxx=snake[i+1].x;
+				auxy=snake[i+1].y;
+				
+				if(i!=0){
+					snake[i+1].x=auxx2;
+					snake[i+1].y=auxy2;
+				}
+				if(i==0){
+					snake[i+1].x=snake[i].x;
+					snake[i+1].y=snake[i].y;
+					
+					ult=direccion(espacio,&snake[0],letra,&muerto,ult,tam);
+					
+					// si la posicion de la cabeza es la misma que la de la manzana
+					if (manzana.x == snake[0].x && manzana.y == snake[0].y)
+					{
+						tam++;
+						puntaje=puntaje+100;
+						// muevo la vivorita si toca una tecla adecuada
+						switch (letra){
+						case 'w':
+							snake[tam-1].x=snake[tam-2].x+1;
+							snake[tam-1].y=snake[tam-2].y;
+							break;
+						case 'a':
+							snake[tam-1].x=snake[tam-2].x;
+							snake[tam-1].y=snake[tam-2].y+1;
+							break;
+						case 's':
+							snake[tam-1].x=snake[tam-2].x-1;
+							snake[tam-1].y=snake[tam-2].y;
+							break;
+						case 'd':
+							snake[tam-1].x=snake[tam-2].x;
+							snake[tam-1].y=snake[tam-2].y-1;
+							break;
+						default:
+							break;
+						}
+						
+						// agrega una manzana en una posicion libre dentro de los margenes
+						while(dif==0){
+							dif=1;
+							manzana.x = 1 + rand() % (t - 2);
+							manzana.y = 1 + rand() % (t - 2);
+							for(int j=0;j<(tam-1);j++){
+								if(manzana.x == snake[j].x && manzana.y == snake[j].y){
+									dif=0;
+									break;
+								}
+							}
+						}
+						dif=0;
+						
+						// asigna la manzana en la posicion adecuada
+						espacio[manzana.x][manzana.y] = '#';
+					}
+				}
+				espacio[snake[i+1].x][snake[i+1].y]='x';
+				espacio[auxx][auxy]=' ';
+				auxx2=auxx;
+				auxy2=auxy;
+			}
+			
+			// muestra el frame
+			imprimir(espacio, &puntaje);
 		}
-
-        // muestra el frame
-		imprimir(espacio, &puntaje);
+		
+		printf("\n\n\n			GAME OVER\n\n\n\n");
+		printf("  Ingrese su nombre: ");
+		scanf("%s", &nombre);
+		printf("  Su puntaje fue: %d", puntaje);
+		
+		guardar_puntaje(nombre, puntaje);
+	}else{
+		if(letra == 'p'){
+			ver_puntajes();
+		}
 	}
-
-	printf("\n\n\n			GAME OVER\n\n\n\n");
-    printf("  Ingrese su nombre: ");
-    scanf("%s", &nombre);
-    printf("  Su puntaje fue: %d", puntaje);
-	
-	guardar_puntaje(nombre, puntaje);
+    
 	
 	return 0;
 }
@@ -280,4 +290,26 @@ void guardar_puntaje(char nombre[20], int puntaje){
 	// agrega la informacion y cierra el archivo
 	fprintf(fpuntaje, "%s %d\n", nombre, puntaje);
 	fclose(fpuntaje);
+}
+	
+void ver_puntajes(){
+	FILE *fpuntaje;
+	char nombre[20];
+	int puntaje=0;
+	fpuntaje=fopen("./data.txt", "r");
+	
+	// si no lo encuentra vuelve al menu de inicio
+	if(NULL == fpuntaje){
+		printf("No hay puntajes guardados");
+	}else{
+		// lee la informacion y cierra el archivo
+		while(!feof(fpuntaje)){
+			fscanf(fpuntaje,"%s %d\n", &nombre, &puntaje);
+			printf("%s: %d puntos \n", nombre, puntaje);
+		}
+		fclose(fpuntaje);
+	}
+	
+	
+	
 }
