@@ -87,7 +87,9 @@ int main(int argc, char *argv[])
 		cursorInfo.bVisible = TRUE;
 		SetConsoleCursorInfo(hConsole, &cursorInfo);
 		
-		guardar_puntaje(puntaje);
+		if(puntaje != 0){
+			guardar_puntaje(puntaje);
+		}
 	}
 	else if (opcion == 2)
 	{
@@ -125,7 +127,7 @@ void imprimir(char espacio[t][t], int *puntaje, struct fruta *manzana)
 	}
 	// imprime el puntaje actual
 	printf("\n PUNTAJE: %d", *puntaje);
-	printf("\n x:%d y:%d", manzana->y, manzana->x);
+	//printf("\n x:%d y:%d", manzana->y, manzana->x);
 	
 	// deja una espera antes de refrescar
 	system("cls");
@@ -247,7 +249,7 @@ void guardar_puntaje(int puntaje_nuevo)
 {
 	struct node *head = NULL;
 	char nombre_nuevo[20], nombre_leido[20];
-	int ranking=1, puntaje_leido=0, puntaje_agregado=0;
+	int ranking=0, puntaje_leido=0, puntaje_agregado=0;
 	
 	// crea el tipo de dato archivo y lo abre en modo append
 	FILE *fpuntaje;
@@ -256,13 +258,13 @@ void guardar_puntaje(int puntaje_nuevo)
 	// si no lo encuentra intenta crearlo
 	if (NULL == fpuntaje)
 	{
-		printf("No se encontro el archivo de puntajes, creandolo...\n");
+		printf("  No se encontro el archivo de puntajes, creandolo...\n");
 		fpuntaje = fopen(PUNTAJES, "w");
 		
 		// si no puede sale del programa
 		if(NULL == fpuntaje)
 		{
-			printf("No se pudo crear el archivo...");
+			printf("  No se pudo crear el archivo...");
 			exit(1);
 		}else
 		{
@@ -300,14 +302,23 @@ void guardar_puntaje(int puntaje_nuevo)
 		}
 		fclose(fpuntaje);
 		
-		if(ranking >= 10) //elimina el menor puntaje
+		if(puntaje_agregado == 0 && ranking < 10)
 		{
-			pop(&head);
+			printf("  Ingrese su nombre: ");
+			scanf(" %s", nombre_nuevo);
+			printf("  Su puntaje fue: %d", puntaje_nuevo);
+			push(&head, nombre_nuevo, puntaje_nuevo);
+			puntaje_agregado=1;
+			ranking++;
 		}
-		
+			
 		// en caso de que haya sido mayor a alguno de los puntajes ya almacenados
 		if(1 == puntaje_agregado)
 		{
+			if(ranking >= 10) //elimina el menor puntaje
+			{
+				pop(&head);
+			}
 			// lo guarda
 			fpuntaje = fopen(PUNTAJES, "w");
 			if(NULL == fpuntaje){
@@ -316,23 +327,15 @@ void guardar_puntaje(int puntaje_nuevo)
 			}
 			
 			
-			for(int i=0; i<ranking; i++)
+			struct node *temp = head;
+			while (NULL != temp->siguiente)
 			{
-				struct node *temp = head;
-				while (NULL != temp)
-				{
-					fprintf(fpuntaje, "%s %d\n", temp->nombre, temp->puntaje);
-					temp = temp->siguiente;
-				}
-				
+				fprintf(fpuntaje, "%s %d\n", temp->nombre, temp->puntaje);
+				temp = temp->siguiente;
 			}
+
 			
 			fclose(fpuntaje);
-			
-			while(NULL != head)
-			{
-				pop(&head);
-			}
 		}
 	}
 }
@@ -598,7 +601,7 @@ void push(struct node **head, char nuevo_nombre[20], int nuevo_puntaje)
 		temp->siguiente = nodo_nuevo;
 	}
 }
-
+	
 void pop(struct node **head)
 {
 	struct node *temp = *head;
