@@ -62,42 +62,52 @@ int main(int argc, char *argv[])
 	int auxx = 0, auxy = 0; // para modificar el tamanio de la snake
 	int tam = t_in;			// tamanio inicial de la matriz
 	
-	// genero la matriz del mapa con los bordes y la manzana
-	generar(espacio, &manzana);
-	// creo la vivorita
-	spawn(espacio, snake);
-	// imprimo menu de inicio
-	opcion = menu(&letra);
-	
-	if (opcion == 1)
-	{
-		letra = 'w';
-		ult = 'w';
-		// mientras el jugador no haya perdido puede jugar
-		while (muerto == 0)
-		{
-			ult=movimiento(&letra,&auxx,&auxy,&auxx2,&auxy2,snake,espacio,&manzana,&tam,&muerto,ult,&puntaje);
-			
-			// muestra el frame
-			imprimir(espacio, &puntaje, &manzana);
-		}
-		
-		printf(ROJO_T "\n\n\n			GAME OVER\n\n\n\n" RESET_COLOR);
-		
-		cursorInfo.bVisible = TRUE;
+	while(opcion!=3){
+		muerto = 0;
+		tam = t_in;
+		puntaje = 0;
+		opcion = 0;
+		// imprimo menu de inicio
+		opcion = menu(&letra);
+		cursorInfo.bVisible = FALSE;
 		SetConsoleCursorInfo(hConsole, &cursorInfo);
 		
-		if(puntaje != 0){
-			guardar_puntaje(puntaje);
+		// genero la matriz del mapa con los bordes y la manzana
+		generar(espacio, &manzana);
+		// creo la vivorita
+		spawn(espacio, snake);
+		
+		switch(opcion){
+		case 1:
+			letra = 'w';
+			ult = 'w';
+			// mientras el jugador no haya perdido puede jugar
+			while (muerto == 0)
+			{
+				ult=movimiento(&letra,&auxx,&auxy,&auxx2,&auxy2,snake,espacio,&manzana,&tam,&muerto,ult,&puntaje);
+				
+				// muestra el frame
+				imprimir(espacio, &puntaje, &manzana);
+			}
+			
+			printf(ROJO_T "\n\n\n			GAME OVER\n\n\n\n" RESET_COLOR);
+			
+			cursorInfo.bVisible = TRUE;
+			SetConsoleCursorInfo(hConsole, &cursorInfo);
+			
+			if(puntaje != 0){
+				guardar_puntaje(puntaje);										//solucionar cuando se muere sin puntaje y no aparece el game over
+			}
+			break;
+		case 2:
+			ver_puntajes();
+			while (kbhit() != 1){
+			}
+			system("cls");
+			break;
+		default:
+			break;
 		}
-	}
-	else if (opcion == 2)
-	{
-		ver_puntajes();
-	}
-	else
-	{
-		exit(0);
 	}
 	
 	return 0;
@@ -415,8 +425,7 @@ int menu(char *letra)
 			printf("\n				       jugar   puntaje | salir |");
 			printf("\n				                       --------- ");
 		}
-		while (kbhit() != 1)
-		{
+		while (kbhit() != 1){
 		}
 		*letra = getch();
 		if (*letra == 'd')
